@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/controller"
+            android:icon="@drawable/ic_controller"
+            android:title="遥控模式" />
+
+        <item
+            android:id="@+id/patrol"
+            android:icon="@drawable/ic_patrol"
+            android:title="巡逻模式" />
+
+        <item
+            android:id="@+id/arm"
+            android:icon="@drawable/ic_arm"
+            android:title="手臂模式" />
+
+        <item
+            android:id="@+id/auto"
+            android:icon="@drawable/ic_robot"
+            android:title="自主模式" />
+
+    </group>
+
+</menu>
