@@ -21,8 +21,9 @@
                 android:background="@drawable/bg_menu"
                 android:clickable="true"
                 android:focusable="true"
-                android:paddingTop="10dp"
                 android:paddingEnd="20dp"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_menu" />
@@ -37,6 +38,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingStart="20dp"
+                android:paddingEnd="10dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:scaleType="centerCrop"

@@ -7,7 +7,7 @@
         android:layout_height="match_parent">
 
         <com.njp.mobileloomo.views.RockerView
-            android:id="@+id/rocker_linear"
+            android:id="@+id/rocker_base"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_alignParentStart="true"
@@ -19,7 +19,7 @@
             app:rockerSpeedLevel="10" />
 
         <com.njp.mobileloomo.views.RockerView
-            android:id="@+id/rocker_angle"
+            android:id="@+id/rocker_head"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_alignParentEnd="true"
@@ -29,6 +29,38 @@
             app:rockerCallBackMode="CALL_BACK_MODE_STATE_CHANGE"
             app:rockerScale="0.4"
             app:rockerSpeedLevel="10" />
+
+        <ImageView
+            android:id="@+id/img_clear"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="65dp"
+            android:background="@drawable/bg_menu"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_start" />
+
+        <ImageView
+            android:id="@+id/img_add"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="65dp"
+            android:background="@drawable/bg_connection"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_add" />
 
     </RelativeLayout>
 </layout>

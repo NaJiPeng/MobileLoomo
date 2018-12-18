@@ -2,7 +2,6 @@ package com.njp.mobileloomo.robot
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import com.segway.robot.mobile.sdk.connectivity.MobileException
 import com.segway.robot.mobile.sdk.connectivity.MobileMessageRouter
 import com.segway.robot.mobile.sdk.connectivity.StringMessage
@@ -84,9 +83,9 @@ class MobileConnectionManager(private val context: Context) {
     private val mobileMessageRouter = MobileMessageRouter.getInstance()
 
     @SuppressLint("CheckResult")
-    fun send(message: Message<*>, listener: MessageSendListener? = null) {
+    fun send(message: Message<*>, listener: ((Boolean) -> Unit)? = null) {
         if (!isConnect) {
-            listener?.onMessageSentFail("device not connected")
+            listener?.invoke(false)
             return
         }
         Observable.create(ObservableOnSubscribe<Int> {
@@ -96,10 +95,10 @@ class MobileConnectionManager(private val context: Context) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
-                            listener?.onMessageSentSuccess()
+                            listener?.invoke(true)
                         },
                         {
-                            listener?.onMessageSentFail(it.message)
+                            listener?.invoke(false)
                         }
                 )
         messageConnection?.sendMessage(message)
@@ -141,13 +140,6 @@ class MobileConnectionManager(private val context: Context) {
         if (isBind) {
             mobileMessageRouter.unbindService()
         }
-    }
-
-    interface MessageSendListener {
-        fun onMessageSentFail(error: String?)
-
-        fun onMessageSentSuccess()
-
     }
 
 }

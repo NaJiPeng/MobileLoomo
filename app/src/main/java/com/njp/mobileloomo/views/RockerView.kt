@@ -13,7 +13,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.njp.mobileloomo.R
@@ -229,7 +228,6 @@ class RockerView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 val moveX = event.x
                 val moveY = event.y
                 baseDistance = (mAreaRadius + 2).toFloat()
-                Log.d("baseDistance", baseDistance.toString() + "")
                 mRockerPosition = getRockerPositionPoint(mCenterPoint, Point(moveX.toInt(), moveY.toInt()), (mAreaRadius + mRockerRadius).toFloat(), mRockerRadius.toFloat())
                 moveRocker(mRockerPosition!!.x.toFloat(), mRockerPosition!!.y.toFloat())
             }
@@ -238,7 +236,6 @@ class RockerView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 val moveX = event.x
                 val moveY = event.y
                 baseDistance = (mAreaRadius + 2).toFloat()
-                Log.d("baseDistance", baseDistance.toString() + "")
                 mRockerPosition = getRockerPositionPoint(mCenterPoint, Point(moveX.toInt(), moveY.toInt()), (mAreaRadius + mRockerRadius).toFloat(), mRockerRadius.toFloat())
                 moveRocker(mRockerPosition!!.x.toFloat(), mRockerPosition!!.y.toFloat())
             }
@@ -356,7 +353,6 @@ class RockerView(context: Context, attrs: AttributeSet) : View(context, attrs) {
      * @param angle 摇动角度
      */
     private fun callBack(angle: Double, distance: Float) {
-        Log.d("distance", distance.toString() + "")
         if (Math.abs(distance - lastDistance) >= baseDistance / mDistanceLevel) {
             lastDistance = distance
             if (null != mOnDistanceLevelListener) {

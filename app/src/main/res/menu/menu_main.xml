@@ -10,7 +10,7 @@
         <item
             android:id="@+id/patrol"
             android:icon="@drawable/ic_patrol"
-            android:title="巡逻模式" />
+            android:title="路径模式" />
 
         <item
             android:id="@+id/arm"
