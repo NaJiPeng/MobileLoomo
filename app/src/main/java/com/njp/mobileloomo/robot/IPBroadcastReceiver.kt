@@ -12,17 +12,19 @@ class IPBroadcastReceiver {
     private val mHost = "239.0.0.1"
     private val mPort = 10001
 
-    private val multicastSocket = MulticastSocket(mPort).apply {
-        joinGroup(InetAddress.getByName(mHost))
-    }
-
+    private val multicastSocket = MulticastSocket(mPort)
 
     fun receive(listener: (String) -> Unit) {
         Thread {
-            val buffer = ByteArray(1024)
-            val datagramPacket = DatagramPacket(buffer, buffer.size)
-            multicastSocket.receive(datagramPacket)
-            listener.invoke(datagramPacket.address.hostAddress)
+            try{
+                multicastSocket.joinGroup(InetAddress.getByName(mHost))
+                val buffer = ByteArray(1024)
+                val datagramPacket = DatagramPacket(buffer, buffer.size)
+                multicastSocket.receive(datagramPacket)
+                listener.invoke(datagramPacket.address.hostAddress)
+            }catch (e:Exception){
+                //DO NOTHING
+            }
         }.start()
     }
 

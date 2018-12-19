@@ -56,7 +56,12 @@ class MobileConnectionManager(private val context: Context) {
 
                             override fun onMessageReceived(message: Message<*>?) {
                                 message?.let {
-                                    messageReceiveListener?.onNext(it)
+                                    if (message is StringMessage) {
+                                        val messages = message.content.split(":")
+                                        stringMessageReceiveListeners[messages[0]]?.onNext(messages[1])
+                                    } else {
+
+                                    }
                                 }
                             }
                         })
@@ -76,7 +81,7 @@ class MobileConnectionManager(private val context: Context) {
     }
     private var messageConnection: MessageConnection? = null
     var isConnect = false
-    private var messageReceiveListener: ObservableEmitter<Message<*>>? = null
+    private val stringMessageReceiveListeners = HashMap<String, ObservableEmitter<String>>()
     private var connectionStateListener: ObservableEmitter<Boolean>? = null
     private val messageSendListeners = HashMap<Int, ObservableEmitter<Int>>()
 
@@ -105,9 +110,9 @@ class MobileConnectionManager(private val context: Context) {
     }
 
     @SuppressLint("CheckResult")
-    fun setMessageReceiveListener(listener: (Message<*>) -> Unit) {
-        Observable.create(ObservableOnSubscribe<Message<*>> {
-            messageReceiveListener = it
+    fun addStringMessageReceiveListener(head: String, listener: (String) -> Unit) {
+        Observable.create(ObservableOnSubscribe<String> {
+            stringMessageReceiveListeners[head] = it
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
