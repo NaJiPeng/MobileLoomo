@@ -13,13 +13,13 @@ import androidx.navigation.ui.NavigationUI
 import com.njp.mobileloomo.databinding.ActivityMainBinding
 import com.njp.mobileloomo.robot.IPBroadcastReceiver
 import com.njp.mobileloomo.robot.MobileConnectionManager
+import com.njp.mobileloomo.utils.ConnectEvent
 import com.njp.mobileloomo.utils.ToastUtil
+import org.greenrobot.eventbus.EventBus
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    lateinit var mConnectionManager: MobileConnectionManager
-    private val mReceiverIP = IPBroadcastReceiver()
     private lateinit var mNavController: NavController
     private lateinit var mProgressDialog: ProgressDialog
 
@@ -36,14 +36,15 @@ class MainActivity : AppCompatActivity() {
         binding.imgMenu.setOnClickListener {
             binding.drawerLayout.openDrawer(Gravity.START)
         }
-        mConnectionManager = MobileConnectionManager(applicationContext)
-        mConnectionManager.setConnectStateListener {
+        MobileConnectionManager.setConnectStateListener {
             if (it) {
                 mProgressDialog.dismiss()
                 binding.imgConnection.setImageResource(R.drawable.ic_connect)
+                EventBus.getDefault().post(ConnectEvent(true))
                 ToastUtil.show("已连接")
             } else {
                 binding.imgConnection.setImageResource(R.drawable.ic_disconnect)
+                EventBus.getDefault().post(ConnectEvent(false))
                 ToastUtil.show("连接已断开")
             }
         }
@@ -51,11 +52,11 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(binding.navigationView, mNavController)
 
         binding.imgConnection.setOnClickListener {
-            if (mConnectionManager.isConnect) {
+            if (MobileConnectionManager.isConnect) {
                 AlertDialog.Builder(this)
                         .setMessage("断开连接？")
                         .setPositiveButton("确定") { dialogInterface: DialogInterface, _: Int ->
-                            mConnectionManager.unBind()
+                            MobileConnectionManager.unBind()
                             dialogInterface.dismiss()
                         }
                         .setNegativeButton("取消") { dialogInterface: DialogInterface, _: Int ->
@@ -63,8 +64,8 @@ class MainActivity : AppCompatActivity() {
                         }
                         .show()
             } else {
-                mReceiverIP.receive { ip ->
-                    mConnectionManager.connect(ip)
+                IPBroadcastReceiver.receive { ip ->
+                    MobileConnectionManager.connect(ip)
                 }
                 mProgressDialog.show()
             }
@@ -74,6 +75,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mConnectionManager.unBind()
+        MobileConnectionManager.unBind()
     }
 }

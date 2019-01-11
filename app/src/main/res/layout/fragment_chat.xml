@@ -6,7 +6,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:text="Auto"
+            android:text="Chat"
             android:gravity="center"
             android:textSize="36sp"
             android:textColor="@android:color/white"

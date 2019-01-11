@@ -22,7 +22,6 @@ class PatrolFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_patrol, container, false)
-        mConnectManager = (activity as MainActivity).mConnectionManager
         mAdapter = PointsAdapter {
             mConnectManager.send(StringMessage("base_point:$it"))
         }

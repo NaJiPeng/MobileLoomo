@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/auto"
-        android:name="com.njp.mobileloomo.fragments.AutoFragment"
-        tools:layout="@layout/fragment_auto" />
+        android:name="com.njp.mobileloomo.fragments.ChatFragment"
+        tools:layout="@layout/fragment_chat" />
 
 </navigation>

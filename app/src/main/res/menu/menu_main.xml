@@ -20,7 +20,7 @@
         <item
             android:id="@+id/auto"
             android:icon="@drawable/ic_robot"
-            android:title="自主模式" />
+            android:title="对话模式" />
 
     </group>
 

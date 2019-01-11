@@ -2,6 +2,7 @@ package com.njp.mobileloomo.robot
 
 import android.annotation.SuppressLint
 import android.content.Context
+import com.njp.mobileloomo.MyApplication
 import com.segway.robot.mobile.sdk.connectivity.MobileException
 import com.segway.robot.mobile.sdk.connectivity.MobileMessageRouter
 import com.segway.robot.mobile.sdk.connectivity.StringMessage
@@ -17,8 +18,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * 管理与Loomo连接通讯的类
  */
-class MobileConnectionManager(private val context: Context) {
-
+object MobileConnectionManager{
 
     private var isBind = false
     private val bindStateListener = object : ServiceBinder.BindStateListener {
@@ -138,7 +138,7 @@ class MobileConnectionManager(private val context: Context) {
             mobileMessageRouter.unbindService()
         }
         mobileMessageRouter.setConnectionIp(ip)
-        mobileMessageRouter.bindService(context, bindStateListener)
+        mobileMessageRouter.bindService(MyApplication.instance, bindStateListener)
     }
 
     fun unBind() {
