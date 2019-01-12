@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.njp.mobileloomo.databinding.ActivityMainBinding
-import com.njp.mobileloomo.robot.IPBroadcastReceiver
+import com.njp.mobileloomo.robot.IPReceiver
 import com.njp.mobileloomo.robot.MobileConnectionManager
 import com.njp.mobileloomo.utils.ConnectEvent
 import com.njp.mobileloomo.utils.ToastUtil
@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                         .setMessage("断开连接？")
                         .setPositiveButton("确定") { dialogInterface: DialogInterface, _: Int ->
                             MobileConnectionManager.unBind()
+                            IPReceiver.isAlive = false
                             dialogInterface.dismiss()
                         }
                         .setNegativeButton("取消") { dialogInterface: DialogInterface, _: Int ->
@@ -64,17 +65,16 @@ class MainActivity : AppCompatActivity() {
                         }
                         .show()
             } else {
-                IPBroadcastReceiver.receive { ip ->
-                    MobileConnectionManager.connect(ip)
-                }
+                IPReceiver.isAlive = true
                 mProgressDialog.show()
+                IPReceiver.receive()
             }
         }
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
         MobileConnectionManager.unBind()
     }
+
 }

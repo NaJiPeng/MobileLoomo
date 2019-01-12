@@ -32,7 +32,7 @@ class ControllerFragment : Fragment() {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_controller, container, false)
 
         mTimer = Timer(100) {
-            MobileConnectionManager.send(StringMessage("content@base_raw:$lv:$av"))
+            MobileConnectionManager.send(StringMessage("content|base_raw:$lv:$av"))
         }
 
         mBinding.rockerBase.setOnAngleChangeListener(object : RockerView.OnAngleChangeListener {
@@ -67,7 +67,7 @@ class ControllerFragment : Fragment() {
             AlertDialog.Builder(context)
                     .setMessage("重新设置起点将清空所有路径点，是否继续？")
                     .setPositiveButton("确定") { dialogInterface: DialogInterface, _: Int ->
-                        MobileConnectionManager.send(StringMessage("content@base_clear")) {
+                        MobileConnectionManager.send(StringMessage("content|base_clear")) {
                             ToastUtil.show(if (it) "清除路径点成功" else "清除路径点失败")
                         }
                         dialogInterface.dismiss()
@@ -88,7 +88,7 @@ class ControllerFragment : Fragment() {
                         if (name.isNullOrBlank()) {
                             ToastUtil.show("路径点名称不能为空！")
                         } else {
-                            MobileConnectionManager.send(StringMessage("content@base_add:$name")) {
+                            MobileConnectionManager.send(StringMessage("content|base_add:$name")) {
                                 ToastUtil.show(if (it) "添加路径点成功" else "添加路径点失败")
                             }
                             dialogInterface.dismiss()
@@ -109,7 +109,7 @@ class ControllerFragment : Fragment() {
                         if (content.isNullOrEmpty()) {
                             ToastUtil.show("内容不能为空！")
                         } else {
-                            MobileConnectionManager.send(StringMessage("content@speak_content:$content")) {
+                            MobileConnectionManager.send(StringMessage("content|speak_content:$content")) {
                                 ToastUtil.show(if (it) "发送成功" else "发送失败")
                                 dialogInterface.dismiss()
                             }
@@ -124,7 +124,7 @@ class ControllerFragment : Fragment() {
             EventBus.getDefault().register(this)
         }
 
-        MobileConnectionManager.send(StringMessage("mode@control"))
+        MobileConnectionManager.send(StringMessage("mode|control"))
 
         return mBinding.root
     }
@@ -140,7 +140,7 @@ class ControllerFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun controlModeOn(event: ConnectEvent) {
         if (event.isConnect) {
-            MobileConnectionManager.send(StringMessage("mode@control"))
+            MobileConnectionManager.send(StringMessage("mode|control"))
         }
     }
 

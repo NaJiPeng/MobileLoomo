@@ -29,9 +29,9 @@ class PatrolFragment : Fragment() {
         mBinding.recyclerView.layoutManager = GridLayoutManager(context, 5)
         mBinding.recyclerView.adapter = mAdapter
 
-        mConnectManager.addStringMessageReceiveListener("points") {
-            mAdapter.setData(it)
-        }
+//        mConnectManager.setMessageReceiveListener("points") {
+//            mAdapter.setData(it)
+//        }
         mConnectManager.send(StringMessage("base_get"))
 
         return mBinding.root

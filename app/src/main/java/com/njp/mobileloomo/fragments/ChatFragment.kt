@@ -3,6 +3,7 @@ package com.njp.mobileloomo.fragments
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,25 @@ class ChatFragment : Fragment() {
 
 
 
+        MobileConnectionManager.setMessageReceiveListener {
+            when (it) {
+                is StringMessage -> {
+                    Log.i("mmmm", it.content)
+                    val data = it.content.split(":")
+                    when (data[0]) {
+                        "man" -> {
 
+                        }
+                        "robot" -> {
+
+                        }
+                    }
+                }
+                else -> {
+
+                }
+            }
+        }
 
 
 
@@ -34,13 +53,13 @@ class ChatFragment : Fragment() {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
-        MobileConnectionManager.send(StringMessage("mode@chat"))
+        MobileConnectionManager.send(StringMessage("mode|chat"))
         return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this)
         }
     }
@@ -48,7 +67,7 @@ class ChatFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun controlModeOn(event: ConnectEvent) {
         if (event.isConnect) {
-            MobileConnectionManager.send(StringMessage("mode@chat"))
+            MobileConnectionManager.send(StringMessage("mode|chat"))
         }
     }
 

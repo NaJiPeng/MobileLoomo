@@ -18,7 +18,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * 管理与Loomo连接通讯的类
  */
-object MobileConnectionManager{
+object MobileConnectionManager {
 
     private var isBind = false
     private val bindStateListener = object : ServiceBinder.BindStateListener {
@@ -56,12 +56,7 @@ object MobileConnectionManager{
 
                             override fun onMessageReceived(message: Message<*>?) {
                                 message?.let {
-                                    if (message is StringMessage) {
-                                        val messages = message.content.split(":")
-                                        stringMessageReceiveListeners[messages[0]]?.onNext(messages[1])
-                                    } else {
-
-                                    }
+                                    messageReceiveListener?.onNext(it)
                                 }
                             }
                         })
@@ -81,7 +76,7 @@ object MobileConnectionManager{
     }
     private var messageConnection: MessageConnection? = null
     var isConnect = false
-    private val stringMessageReceiveListeners = HashMap<String, ObservableEmitter<String>>()
+    private var messageReceiveListener: ObservableEmitter<Message<*>>? = null
     private var connectionStateListener: ObservableEmitter<Boolean>? = null
     private val messageSendListeners = HashMap<Int, ObservableEmitter<Int>>()
 
@@ -110,9 +105,9 @@ object MobileConnectionManager{
     }
 
     @SuppressLint("CheckResult")
-    fun addStringMessageReceiveListener(head: String, listener: (String) -> Unit) {
-        Observable.create(ObservableOnSubscribe<String> {
-            stringMessageReceiveListeners[head] = it
+    fun setMessageReceiveListener(listener: (Message<*>) -> Unit) {
+        Observable.create(ObservableOnSubscribe<Message<*>> {
+            messageReceiveListener = it
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
