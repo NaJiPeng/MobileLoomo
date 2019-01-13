@@ -84,7 +84,7 @@ object MobileConnectionManager {
 
     @SuppressLint("CheckResult")
     fun send(message: Message<*>, listener: ((Boolean) -> Unit)? = null) {
-        if (!isConnect) {
+        if (!isBind || !isConnect) {
             listener?.invoke(false)
             return
         }
