@@ -44,6 +44,7 @@ class ChatFragment : Fragment() {
                 if (it) {
                     ToastUtil.show("发送成功！")
                     adapter.add("man:${binding.etChat.text}")
+                    binding.recyclerView.smoothScrollToPosition(adapter.itemCount - 1)
                     binding.etChat.text.clear()
                 } else {
                     ToastUtil.show("发送失败！")
@@ -63,11 +64,6 @@ class ChatFragment : Fragment() {
                 }
             }
         }
-
-
-
-
-
 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)

@@ -29,9 +29,9 @@
                 android:background="@drawable/bg_menu"
                 android:clickable="true"
                 android:focusable="true"
-                android:paddingEnd="20dp"
                 android:paddingStart="10dp"
                 android:paddingTop="10dp"
+                android:paddingEnd="20dp"
                 android:paddingBottom="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_menu" />
@@ -46,8 +46,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingStart="20dp"
-                android:paddingEnd="10dp"
                 android:paddingTop="10dp"
+                android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_disconnect" />
@@ -60,6 +60,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
             app:menu="@menu/menu_main" />
 
     </android.support.v4.widget.DrawerLayout>

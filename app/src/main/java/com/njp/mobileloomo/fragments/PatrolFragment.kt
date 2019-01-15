@@ -2,39 +2,78 @@ package com.njp.mobileloomo.fragments
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.design.chip.Chip
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.njp.mobileloomo.MainActivity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.njp.mobileloomo.R
-import com.njp.mobileloomo.adapter.PointsAdapter
+import com.njp.mobileloomo.bean.Coor2D
 import com.njp.mobileloomo.databinding.FragmentPatrolBinding
 import com.njp.mobileloomo.robot.MobileConnectionManager
+import com.njp.mobileloomo.utils.ConnectEvent
 import com.segway.robot.mobile.sdk.connectivity.StringMessage
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class PatrolFragment : Fragment() {
 
     private lateinit var mBinding: FragmentPatrolBinding
-    private lateinit var mConnectManager: MobileConnectionManager
-    private lateinit var mAdapter: PointsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_patrol, container, false)
-        mAdapter = PointsAdapter {
-            mConnectManager.send(StringMessage("base_point:$it"))
+
+
+        MobileConnectionManager.setMessageReceiveListener {
+            when (it) {
+                is StringMessage -> {
+                    val data = it.content.split("|")
+                    when (data[0]) {
+                        "points" -> {
+                            val list = Gson().fromJson<List<Coor2D>>(data[1], object : TypeToken<List<Coor2D>>() {}.type)
+                            list.forEach { point ->
+                                mBinding.chipGroup.addView(
+                                        Chip(context).apply {
+                                            text = point.name
+                                            setOnClickListener {
+                                                MobileConnectionManager.send(StringMessage("content|base_nav:${point.id}"))
+                                            }
+                                        }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        mBinding.recyclerView.layoutManager = GridLayoutManager(context, 5)
-        mBinding.recyclerView.adapter = mAdapter
 
-//        mConnectManager.setMessageReceiveListener("points") {
-//            mAdapter.setData(it)
-//        }
-        mConnectManager.send(StringMessage("base_get"))
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
+
+        MobileConnectionManager.send(StringMessage("mode|patrol"))
 
         return mBinding.root
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    fun controlModeOn(event: ConnectEvent) {
+        if (event.isConnect) {
+            MobileConnectionManager.send(StringMessage("mode|patrol"))
+        }
     }
 
 }

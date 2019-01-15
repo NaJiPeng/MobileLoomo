@@ -10,8 +10,8 @@
             android:id="@+id/rocker_base"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
             android:background="@color/colorPrimary"
             android:backgroundTint="@android:color/transparent"
             app:rockerCallBackMode="CALL_BACK_MODE_STATE_CHANGE"
@@ -22,8 +22,8 @@
             android:id="@+id/rocker_head"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:background="@color/colorPrimary"
             android:backgroundTint="@android:color/transparent"
             app:rockerCallBackMode="CALL_BACK_MODE_STATE_CHANGE"
@@ -31,7 +31,24 @@
             app:rockerSpeedLevel="10" />
 
         <ImageView
-            android:id="@+id/img_clear"
+            android:id="@+id/img_speak"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="end"
+            android:layout_marginTop="65dp"
+            android:background="@drawable/bg_connection"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_chat" />
+
+        <ImageView
+            android:id="@+id/img_reset"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="65dp"
@@ -43,31 +60,14 @@
             android:paddingEnd="20dp"
             android:paddingBottom="10dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_start" />
+            android:src="@drawable/ic_reset" />
 
         <ImageView
             android:id="@+id/img_add"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_below="@+id/img_speak"
             android:layout_alignParentEnd="true"
-            android:layout_gravity="end"
-            android:layout_marginTop="65dp"
-            android:background="@drawable/bg_connection"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingStart="20dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_add" />
-
-        <ImageView
-            android:id="@+id/img_speak"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/img_add"
             android:layout_gravity="end"
             android:layout_marginTop="5dp"
             android:background="@drawable/bg_connection"
@@ -78,7 +78,8 @@
             android:paddingEnd="10dp"
             android:paddingBottom="10dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_chat" />
+            android:src="@drawable/ic_add" />
+
 
     </RelativeLayout>
 </layout>
