@@ -6,6 +6,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/img_camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <com.njp.mobileloomo.views.RockerView
             android:id="@+id/rocker_base"
             android:layout_width="200dp"
@@ -79,7 +84,6 @@
             android:paddingBottom="10dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_add" />
-
 
     </RelativeLayout>
 </layout>

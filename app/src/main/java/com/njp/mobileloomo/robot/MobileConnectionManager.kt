@@ -2,6 +2,7 @@ package com.njp.mobileloomo.robot
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import com.njp.mobileloomo.MyApplication
 import com.segway.robot.mobile.sdk.connectivity.MobileException
 import com.segway.robot.mobile.sdk.connectivity.MobileMessageRouter
@@ -129,6 +130,7 @@ object MobileConnectionManager {
     }
 
     fun connect(ip: String) {
+        Log.i("mmmm","ip:$ip")
         if (isBind) {
             mobileMessageRouter.unbindService()
         }

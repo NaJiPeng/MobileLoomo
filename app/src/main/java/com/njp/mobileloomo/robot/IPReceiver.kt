@@ -1,5 +1,6 @@
 package com.njp.mobileloomo.robot
 
+import android.util.Log
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 

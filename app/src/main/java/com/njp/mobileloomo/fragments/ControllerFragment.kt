@@ -1,9 +1,10 @@
 package com.njp.mobileloomo.fragments
 
-import android.app.AlertDialog
+import android.support.v7.app.AlertDialog
 import android.content.DialogInterface
 import android.databinding.DataBindingUtil
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -34,6 +35,7 @@ class ControllerFragment : Fragment() {
     private var av = 0.0f
     private var pv = 0.5f
     private var yv = 0.0f
+    private var ts = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_controller, container, false)
@@ -47,11 +49,14 @@ class ControllerFragment : Fragment() {
         }
 
         MobileConnectionManager.setMessageReceiveListener {
-            Log.i("mmmm", "${it.timestamp}")
             when (it) {
                 is BufferMessage -> {
-                    Log.i("mmmm", "${it.timestamp}")
-
+                    if (it.timestamp > ts) {
+                        val data = it.content
+                        val bitmap = BitmapFactory.decodeByteArray(data,0,data.size)
+                        mBinding.imgCamera.setImageBitmap(bitmap)
+                        ts = it.timestamp
+                    }
                 }
             }
         }
@@ -113,7 +118,7 @@ class ControllerFragment : Fragment() {
 
         mBinding.imgSpeak.setOnClickListener {
             var editText: EditText?
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context!!)
                     .setMessage("请输入你想说的话：")
                     .setView(EditText(context).apply { editText = this })
                     .setPositiveButton("确定") { dialogInterface: DialogInterface, i: Int ->
@@ -133,7 +138,7 @@ class ControllerFragment : Fragment() {
         }
 
         mBinding.imgReset.setOnClickListener {
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context!!)
                     .setMessage("是否重设起点，并清空已保存的路径点？")
                     .setPositiveButton("确定") { dialogInterface: DialogInterface, i: Int ->
                         MobileConnectionManager.send(StringMessage("content|base_reset")) {
@@ -148,14 +153,14 @@ class ControllerFragment : Fragment() {
 
         mBinding.imgAdd.setOnClickListener {
             val editText: EditText?
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context!!)
                     .setMessage("请输入路径点名称：")
                     .setView(EditText(context).apply {
                         editText = this
                     })
                     .setPositiveButton("确定") { dialogInterface: DialogInterface, i: Int ->
                         val name = editText?.text?.trim()
-                        if (name.isNullOrBlank()){
+                        if (name.isNullOrBlank()) {
                             ToastUtil.show("路径点名称不能为空！")
                             return@setPositiveButton
                         }
