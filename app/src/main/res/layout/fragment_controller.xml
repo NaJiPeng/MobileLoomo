@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <ImageView
             android:id="@+id/img_camera"
             android:layout_width="match_parent"
@@ -70,6 +71,22 @@
             android:src="@drawable/ic_reset" />
 
         <ImageView
+            android:id="@+id/img_photo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/img_reset"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_menu"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_start" />
+
+        <ImageView
             android:id="@+id/img_add"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -86,6 +103,17 @@
             android:paddingBottom="10dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_add" />
+
+        <TextView
+            android:id="@+id/tvClassify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="200dp"
+            android:background="#9f000000"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:textColor="@android:color/holo_green_light"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 </layout>

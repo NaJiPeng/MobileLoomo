@@ -1,17 +1,22 @@
 package com.njp.mobileloomo.fragments
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.support.v7.app.AlertDialog
 import android.content.DialogInterface
 import android.databinding.DataBindingUtil
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Environment
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import com.njp.mobileloomo.R
 import com.njp.mobileloomo.databinding.FragmentControllerBinding
 import com.njp.mobileloomo.robot.MobileConnectionManager
@@ -21,10 +26,12 @@ import com.njp.mobileloomo.utils.ToastUtil
 import com.njp.mobileloomo.views.RockerView
 import com.segway.robot.mobile.sdk.connectivity.BufferMessage
 import com.segway.robot.mobile.sdk.connectivity.StringMessage
+import com.tbruyelle.rxpermissions2.RxPermissions
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.nio.ByteBuffer
+import java.io.File
+import java.io.FileOutputStream
 
 class ControllerFragment : Fragment() {
 
@@ -36,9 +43,31 @@ class ControllerFragment : Fragment() {
     private var pv = 0.5f
     private var yv = 0.0f
     private var ts = 0L
+    private lateinit var rxPermissions: RxPermissions
 
+    private val children = listOf("Scissors", "Rock", "Paper")
+
+    private var isRecording = false
+    private var isClassify = false
+    private val parent = File(Environment.getExternalStorageDirectory(), "Loomo").apply {
+        if (!exists()) {
+            mkdir()
+        }
+    }
+    private var child = ""
+
+    @SuppressLint("CheckResult")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_controller, container, false)
+        rxPermissions = RxPermissions(this)
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe { granted ->
+                    if (granted) {
+                        if (!parent.exists()) {
+                            parent.mkdir()
+                        }
+                    }
+                }
 
         mTimerBase = Timer(100) {
             MobileConnectionManager.send(StringMessage("content|base_velocity:$lv:$av"))
@@ -50,10 +79,33 @@ class ControllerFragment : Fragment() {
 
         MobileConnectionManager.setMessageReceiveListener {
             when (it) {
+                is StringMessage -> {
+                    val data = it.content.split(":")
+                    when (data[0]) {
+                        "classify" -> {
+                            mBinding.tvClassify.text = it.content
+                            Log.i("mmmm",it.content)
+                        }
+                    }
+                }
+
                 is BufferMessage -> {
                     if (it.timestamp > ts) {
                         val data = it.content
-                        val bitmap = BitmapFactory.decodeByteArray(data,0,data.size)
+                        if (isRecording) {
+                            if (it.timestamp > ts + 1000) {
+                                val dir = File(parent, child).apply {
+                                    if (!exists()) {
+                                        mkdir()
+                                    }
+                                }
+                                val file = File(dir, "${it.timestamp}.jpg")
+                                val out = FileOutputStream(file)
+                                out.write(data)
+                                out.flush()
+                            }
+                        }
+                        val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
                         mBinding.imgCamera.setImageBitmap(bitmap)
                         ts = it.timestamp
                     }
@@ -88,6 +140,8 @@ class ControllerFragment : Fragment() {
 
         })
 
+
+
         mBinding.rockerHead.setOnAngleChangeListener(object : RockerView.OnAngleChangeListener {
             override fun onStart() {
                 mTimerHead.start()
@@ -110,7 +164,6 @@ class ControllerFragment : Fragment() {
             }
 
             override fun onFinish() {
-                MobileConnectionManager.send(StringMessage("content|head_velocity:0:0"))
                 mTimerHead.stop()
             }
 
@@ -172,6 +225,57 @@ class ControllerFragment : Fragment() {
                         dialogInterface.dismiss()
                     }
                     .show()
+        }
+
+        mBinding.imgPhoto.setOnClickListener {
+            if (!isClassify) {
+                mBinding.tvClassify.visibility = View.VISIBLE
+                MobileConnectionManager.send(StringMessage("content|classify:true"))
+                isClassify = true
+                ToastUtil.show("开始进行物体识别")
+                mBinding.imgPhoto.setImageResource(R.drawable.ic_stop)
+            } else {
+                mBinding.tvClassify.visibility = View.INVISIBLE
+                MobileConnectionManager.send(StringMessage("content|classify:false"))
+                isClassify = false
+                ToastUtil.show("停止进行物体识别")
+                mBinding.imgPhoto.setImageResource(R.drawable.ic_start)
+            }
+//            var radioGroup: RadioGroup?
+//            if (!isRecording) {
+//                AlertDialog.Builder(context!!)
+//                        .setMessage("请选择采集物品名称：")
+//                        .setView(RadioGroup(context).apply {
+//                            radioGroup = this
+//                            children.forEachIndexed { i: Int, s: String ->
+//                                addView(RadioButton(context).apply {
+//                                    id = i
+//                                    text = s
+//                                    if (i == 0) {
+//                                        isChecked = true
+//                                    }
+//                                })
+//                            }
+//                        }).setPositiveButton("开始采集") { dialogInterface: DialogInterface, i: Int ->
+//                            rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                                    .subscribe { granted ->
+//                                        if (granted){
+//                                            child = children[radioGroup!!.checkedRadioButtonId]
+//                                            ToastUtil.show("开始采集")
+//                                            mBinding.imgPhoto.setImageResource(R.drawable.ic_stop)
+//                                            isRecording = true
+//                                        }else{
+//                                            ToastUtil.show("未授权")
+//                                        }
+//                                    }
+//                            dialogInterface.dismiss()
+//                        }
+//                        .show()
+//            } else {
+//                ToastUtil.show("停止采集")
+//                mBinding.imgPhoto.setImageResource(R.drawable.ic_start)
+//                isRecording = false
+//            }
         }
 
         if (!EventBus.getDefault().isRegistered(this)) {
